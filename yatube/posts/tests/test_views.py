@@ -116,9 +116,9 @@ class PostPageTests(TestCase):
     def test_post_form_comments(self):
         """Комментарии выводятся на странице поста"""
         comment = Comment.objects.create(
-             post=self.post,
-             author=self.user,
-             text='Тестовый текст поста',
+            post=self.post,
+            author=self.user,
+            text='Тестовый текст поста',
         )
         response = self.authorized_client.get(
             reverse('posts:post_detail',
@@ -133,7 +133,8 @@ class PostPageTests(TestCase):
             slug='other-test-group',
             description='Другое тестовое описание',
         )
-        response = self.authorized_client.get(reverse('posts:group_list', args=['other-test-group']))
+        response = self.authorized_client.get(
+            reverse('posts:group_list', args=['other-test-group']))
         self.assertNotIn(PostPageTests.post, response.context['page_obj'])
 
 

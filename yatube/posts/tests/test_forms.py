@@ -55,7 +55,6 @@ class PostsFormsTest(TestCase):
             group=self.group.id,
             author=self.user
         ).exists())
-        self.assertEqual(self.post.image, 'posts/small.gif')
         self.assertRedirects(response, reverse(
             'posts:profile', kwargs={'username': self.user.username}))
 
@@ -80,7 +79,6 @@ class PostsFormsTest(TestCase):
             text=post_not_group['text'],
             author=self.user
         ).exists())
-        self.assertEqual(self.post.image, 'posts/small.gif')
         self.assertRedirects(response, reverse(
             'posts:profile', kwargs={'username': self.user.username}))
 
@@ -109,6 +107,5 @@ class PostsFormsTest(TestCase):
             text='Редактированный тестовый пост',
             group=self.group.id,
             author=self.user).exists())
-        self.assertEqual(self.post.image, 'posts/small.gif')
         self.assertRedirects(response, reverse(
             'posts:post_detail', kwargs={'post_id': self.post.id}))

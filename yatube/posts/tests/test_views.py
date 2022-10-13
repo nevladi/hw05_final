@@ -114,6 +114,7 @@ class PostPageTests(TestCase):
         self.post_info(response.context['post'])
 
     def test_post_form_comments(self):
+        """Комментарии выводятся на странице поста"""
         comment = Comment.objects.create(
              post=self.post,
              author=self.user,
@@ -126,7 +127,7 @@ class PostPageTests(TestCase):
         self.assertIn(comment, response)
 
     def test_post_not_other_group(self):
-        """Новый post не отображается в другой группе."""
+        """Посты чужой группы не отображаются на странице группы."""
         Group.objects.create(
             title='Другой заголовок',
             slug='other-test-group',

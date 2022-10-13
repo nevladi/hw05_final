@@ -5,7 +5,7 @@ from django.core.cache import cache
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client, TestCase, override_settings
 from django.urls import reverse
-from posts.models import Group, Post
+from posts.models import Group, Post, Comment
 import shutil
 import tempfile
 
@@ -112,6 +112,28 @@ class PostPageTests(TestCase):
                 'posts:post_detail',
                 kwargs={'post_id': self.post.id}))
         self.post_info(response.context['post'])
+
+    def test_post_form_comments(self):
+        comment = Comment.objects.create(
+             post=self.post,
+             author=self.user,
+             text='Тестовый текст поста',
+        )
+        response = self.authorized_client.get(
+            reverse('posts:post_detail',
+                    kwargs={'post_id': self.post.id})).context['comments']
+
+        self.assertIn(comment, response)
+
+    def test_post_not_other_group(self):
+        """Новый post не отображается в другой группе."""
+        Group.objects.create(
+            title='Другой заголовок',
+            slug='other-test-group',
+            description='Другое тестовое описание',
+        )
+        response = self.authorized_client.get(reverse('posts:group_list', args=['other-test-group']))
+        self.assertNotIn(PostPageTests.post, response.context['page_obj'])
 
 
 class PaginatorViewTests(TestCase):

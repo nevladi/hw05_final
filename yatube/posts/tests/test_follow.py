@@ -61,8 +61,6 @@ class FollowViewTest(TestCase):
         может удалять других пользователей из подписок"""
         Follow.objects.create(user=self.user, author=self.user_2)
         follow_count = Follow.objects.count()
-        self.assertTrue(Follow.objects.filter(user=self.user,
-                                              author=self.user_2).exists())
         self.authorized_client.get(
             reverse(
                 'posts:profile_unfollow',

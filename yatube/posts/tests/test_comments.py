@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from django.contrib.auth import get_user_model
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -35,6 +36,12 @@ class CommentTests(TestCase):
 
     def test_guest_client_comment_redirect_login(self):
         """Неавторизированный пользователь не может комментаровать"""
-        count_comments = Comment.objects.count()
-        self.guest_client.post(CommentTests.comment_url)
-        self.assertEqual(count_comments, Comment.objects.count())
+        text_comment = {
+            'text': 'Тестовый комментарий',
+        }
+        response = self.guest_client.post(reverse(
+            'posts:add_comment', kwargs={'post_id': self.post.pk}),
+            data=text_comment,
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '/auth/login/?next=/posts/1/comment/')

@@ -5,7 +5,8 @@
       <div class="mb-5">
         <h1>Все посты пользователя {{ author.get_full_name }} </h1>
         <h3>Всего постов: {{ count }}</h3>
-        {% if user.is_authenticated %}
+        <h6>Подсписчики: {{ author.following.count }} Подписки: {{ author.follower.count }} </h6>
+        {% if user != author %}
           {% if following %}
             <a
               class="btn btn-lg btn-light"
@@ -23,26 +24,7 @@
           {% endif %}
         {% endif %}
         {% for posts in page_obj %}
-          <article>
-            <ul>
-              <li>
-                Автор: {{ posts.author.get_full_name }}
-                <a href="{% url 'posts:profile' posts.author %}">все посты пользователя</a>
-              </li>
-              <li>
-                Дата публикации: {{ posts.pub_date|date:"d E Y" }}
-              </li>
-            </ul>
-            {% thumbnail posts.image "960x339" crop="center" upscale=True as im %}
-            <img class="card-img my-2" src="{{ im.url }}">
-            {% endthumbnail %}
-            <p>  {{ posts.text }} </p>
-              <a href="{% url 'posts:post_detail' posts.pk %}">подробная информация </a>
-             <p> </p>
-              {% if posts.group %}
-                <a href="{% url 'posts:group_list' posts.group.slug %}">Все записи группы:</a>
-              {% endif %}
-          </article>
+          {% include 'posts/includes/card_profile.html' %}
           {% if not forloop.last %}<hr>{% endif %}
         {% endfor %}
       </div>

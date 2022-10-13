@@ -39,24 +39,23 @@ def profile(request, username):
     author = get_object_or_404(User, username=username)
     page_obj = get_page_context(
         author.posts.all(), request, num_posts=INT_POSTS)
-    follow = \
-        (request.user.is_authenticated and author != request.user
-         and Follow.objects.filter(author=author, user=request.user).exists())
+    following = request.user.is_authenticated
+    if following:
+        following = author.following.filter(user=request.user).exists()
     context = {
         'author': author,
         'page_obj': page_obj,
-        'following': follow,
+        'following': following,
     }
     return render(request, 'posts/profile.html', context)
 
 
 def post_detail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
-    comments = post.comments.all()
-    form = CommentForm(request.POST or None)
+    comments = post.comments.select_related('author').all()
+    form = CommentForm()
     context = {
         'post': post,
-        'author': post.author,
         'form': form,
         'comments': comments,
     }
@@ -66,7 +65,7 @@ def post_detail(request, post_id):
 @login_required
 def post_create(request):
     if request.method == 'POST':
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, files=request.FILES or None)
 
         if form.is_valid():
             post = form.save(commit=False)
@@ -103,7 +102,7 @@ def post_edit(request, post_id):
 
 @login_required
 def add_comment(request, post_id):
-    post = Post.objects.get(id=post_id)
+    post = get_object_or_404(Post, id=post_id)
     form = CommentForm(request.POST or None)
     if form.is_valid():
         comment = form.save(commit=False)

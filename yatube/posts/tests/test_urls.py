@@ -119,5 +119,3 @@ class PostURLTests(TestCase):
         self.assertEqual(Follow.objects.count(), follow_count)
         self.assertRedirects(
             response, f'/auth/login/?next=/profile/{self.user_2}/follow/')
-
-

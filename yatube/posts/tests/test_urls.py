@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase, Client
+from django.urls import reverse
 
-from posts.models import Group, Post
+from posts.models import Group, Post, Follow
 
 User = get_user_model()
 
@@ -22,13 +23,14 @@ class PostURLTests(TestCase):
             pub_date='Тестовая дата',
             group=cls.group
         )
+        cls.user_2 = User.objects.create_user(username='User2')
 
     def setUp(self):
         self.guest_client = Client()
         us_author = PostURLTests.user
         self.authorized_client_author = Client()
         self.authorized_client_author.force_login(us_author)
-        self.user = User.objects.create_user(username='Backand')
+        self.author = User.objects.create_user(username='Backan')
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
@@ -73,7 +75,17 @@ class PostURLTests(TestCase):
         self.assertRedirects(
             response, f'/auth/login/?next=/posts/{self.post.id}/edit/')
 
+    def test_post_follow_url_redirect_anonymous_on_login(self):
+        """Страница /posts/post_id/edit/ перенаправит анонимного пользователя
+        на страницу логина.
+        """
+        response = self.guest_client.get(
+            f'/posts/{self.post.id}/edit/', follow=True)
+        self.assertRedirects(
+            response, f'/auth/login/?next=/posts/{self.post.id}/edit/')
+
     def test_post_edit_url_redirect_not_author_on_login(self):
+
         """Страница posts/post_id/edit/ перенаправит авторизованного
          пользователя, не являющегося автором поста,
         на страницу просмотра этого поста.
@@ -97,3 +109,13 @@ class PostURLTests(TestCase):
             with self.subTest(url=url):
                 response = self.authorized_client_author.get(url)
                 self.assertTemplateUsed(response, template)
+
+    def test_follow_anonim_user(self):
+
+        follow_count = Follow.objects.count()
+        response = self.guest_client.get(reverse('posts:profile_follow',
+                                                 kwargs={'username': self.user_2}))
+        self.assertEqual(Follow.objects.count(), follow_count)
+        self.assertRedirects(response, f'/auth/login/?next=/profile/{self.user_2}/follow/')
+
+

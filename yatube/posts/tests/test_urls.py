@@ -110,7 +110,7 @@ class PostURLTests(TestCase):
                 response = self.authorized_client_author.get(url)
                 self.assertTemplateUsed(response, template)
 
-    def test_follow_anonim_user(self):
+    def test_follow_unfollow_anonim_user(self):
 
         follow_count = Follow.objects.count()
         response = self.guest_client.get(
@@ -119,3 +119,10 @@ class PostURLTests(TestCase):
         self.assertEqual(Follow.objects.count(), follow_count)
         self.assertRedirects(
             response, f'/auth/login/?next=/profile/{self.user_2}/follow/')
+        response = self.guest_client.get(
+            reverse('posts:profile_unfollow',
+                    kwargs={'username': self.user_2}))
+        self.assertEqual(Follow.objects.count(), follow_count)
+        self.assertRedirects(
+            response, f'/auth/login/?next=/profile/{self.user_2}/unfollow/')
+

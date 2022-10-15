@@ -84,17 +84,6 @@ class PostURLTests(TestCase):
         self.assertRedirects(
             response, f'/auth/login/?next=/posts/{self.post.id}/edit/')
 
-    def test_post_edit_url_redirect_not_author_on_login(self):
-
-        """Страница posts/post_id/edit/ перенаправит авторизованного
-         пользователя, не являющегося автором поста,
-        на страницу просмотра этого поста.
-        """
-        response = self.authorized_client.get(
-            f'/posts/{self.post.id}/edit/', follow=True)
-        self.assertRedirects(
-            response, f'/posts/{self.post.id}/')
-
     def test_urls_uses_correct_template(self):
         """URL-адреса используют соответствующие шаблоны."""
         templates_url_names = {

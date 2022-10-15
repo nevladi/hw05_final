@@ -15,10 +15,10 @@ class CommentTests(TestCase):
             text='Редактируемый текст',
             author=cls.test_user,
         )
-        cls.comment_url = reverse('posts:add_comment', kwargs={
-            'post_id': CommentTests.post.pk
-        }
-                                  )
+        cls.comment_url = \
+            reverse('posts:add_comment', kwargs={
+                'post_id': CommentTests.post.pk}
+                    )
 
     def setUp(self):
         self.guest_client = Client()
@@ -46,4 +46,5 @@ class CommentTests(TestCase):
             data=text_comment,
         )
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, f'/auth/login/?next=/posts/{self.post.pk}/comment/')
+        self.assertRedirects(
+            response, f'/auth/login/?next=/posts/{self.post.pk}/comment/')

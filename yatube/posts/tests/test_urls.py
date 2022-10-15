@@ -113,9 +113,11 @@ class PostURLTests(TestCase):
     def test_follow_anonim_user(self):
 
         follow_count = Follow.objects.count()
-        response = self.guest_client.get(reverse('posts:profile_follow',
-                                                 kwargs={'username': self.user_2}))
+        response = self.guest_client.get(
+            reverse('posts:profile_follow',
+                    kwargs={'username': self.user_2}))
         self.assertEqual(Follow.objects.count(), follow_count)
-        self.assertRedirects(response, f'/auth/login/?next=/profile/{self.user_2}/follow/')
+        self.assertRedirects(
+            response, f'/auth/login/?next=/profile/{self.user_2}/follow/')
 
 

@@ -1,3 +1,43 @@
-# hw05_final
+## Yatube
+Проект cоциальной сети Yatube разработан по MVT архитектуре.
+Написаны тесты для проверки работы сервиса (pytest).
 
-[![CI](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml/badge.svg?branch=master)](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml)
+В проекте реализованы следующие возможности:
+
+- регистрация, авторизация с верификацией
+- публикация статей (текст, картинка)
+- комментирование записей других пользователей
+- подписка на авторов статей
+- смена и восстановление пароля через почту
+- пагинация
+- кеширование страниц
+
+## Запуск проекта в dev-режиме
+
+- Клонировать репозиторий и перейти в него в командной строке:
+```
+git clone https://github.com/nevladi/api_yamdb.git 
+cd api_yamdb
+```
+
+- Cоздать и активировать виртуальное окружение:
+```
+    python3 -m venv env
+    source env/bin/activate
+```
+- Установить зависимости из файла requirements.txt
+```
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+```
+- Выполнить миграции:
+```
+    python manage.py migrate
+```
+
+- В папке с файлом manage.py выполнить команду:
+```
+    python manage.py runserver
+```
+Проект выполнен в рамках курса Яндекс.Практикум.
+Выполнил: Python-разрабочик Нестеров Владислав

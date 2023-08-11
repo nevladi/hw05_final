@@ -5,8 +5,13 @@ User = get_user_model()
 
 
 class Group(models.Model):
-    title = models.CharField(max_length=200)
-    slug = models.SlugField(verbose_name='URL', unique=True)
+    title = models.CharField(
+        max_length=200
+    )
+    slug = models.SlugField(
+        verbose_name='URL',
+        unique=True
+    )
     description = models.TextField()
 
     def __str__(self):
@@ -14,10 +19,15 @@ class Group(models.Model):
 
 
 class Post(models.Model):
-    text = models.TextField(verbose_name='Пост',
-                            help_text='Введите текст поста')
-    pub_date = models.DateTimeField(verbose_name='Дата публикации',
-                                    auto_now_add=True)
+    text = models.TextField(
+        verbose_name='Пост',
+        help_text='Введите текст поста'
+    )
+    pub_date = models.DateTimeField(
+        verbose_name='Дата публикации',
+        auto_now_add=True,
+        db_index=True
+    )
     author = models.ForeignKey(
         User,
         verbose_name='Автор',
@@ -47,15 +57,25 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE,
-                             related_name='comments')
-    author = models.ForeignKey(User, on_delete=models.CASCADE,
-                               related_name='comments')
-    text = models.TextField(verbose_name='Текст комментария',
-                            help_text='Напишите комментарий')
-    created = models.DateTimeField(verbose_name='date published',
-                                   auto_now_add=True,
-                                   help_text='Дата публикации')
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
+    text = models.TextField(
+        verbose_name='Текст комментария',
+        help_text='Напишите комментарий'
+    )
+    created = models.DateTimeField(
+        verbose_name='date published',
+        auto_now_add=True,
+        help_text='Дата публикации'
+    )
 
     class Meta:
         ordering = ('-created',)

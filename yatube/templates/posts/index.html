@@ -10,7 +10,7 @@
     <h1>
       Последние обновления на сайте
     </h1>
-    {% cache 20 index_page page_obj.number %}
+
       {% for post in page_obj %}
         <article>
           <ul>
@@ -34,7 +34,7 @@
         </article>
         {% if not forloop.last %}<hr>{% endif %}
       {% endfor %}
-    {% endcache %}
+
   </div>
   {% include 'posts/includes/paginator.html' %}
 {% endblock %}
